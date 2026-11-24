@@ -4,6 +4,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.sonarqube)
 }
 
 allprojects {
@@ -11,12 +12,24 @@ allprojects {
     version = "0.0.1-SNAPSHOT"
 }
 
+sonar {
+    properties {
+        property("sonar.projectKey", "OstrozhynskanOksana_online-store")
+        property("sonar.organization", "ostrozhynskanoksana")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
+
 val javaVersion = libs.versions.java.get()
 val springCloudBom = libs.spring.cloud.dependencies.get().toString()
+val jacocoVersion = libs.versions.jacoco.get()
+val checkstyleVersion = libs.versions.checkstyle.get()
 
 subprojects {
     apply(plugin = "java")
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "jacoco")
+    apply(plugin = "checkstyle")
 
     repositories {
         mavenCentral()
@@ -52,5 +65,25 @@ subprojects {
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+        // After tests run, build the coverage report
+        finalizedBy(tasks.named("jacocoTestReport"))
+    }
+
+    extensions.configure<JacocoPluginExtension> {
+        toolVersion = jacocoVersion
+    }
+
+    extensions.configure<CheckstyleExtension> {
+        toolVersion = checkstyleVersion
+        configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+        maxWarnings = 0
+    }
+
+    tasks.named<JacocoReport>("jacocoTestReport") {
+        dependsOn(tasks.named("test"))
+        reports {
+            xml.required = true   // machine-readable, for SonarCloud
+            html.required = true  // human-readable, open in a browser
+        }
     }
 }
