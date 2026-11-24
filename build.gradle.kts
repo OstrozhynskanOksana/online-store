@@ -13,10 +13,12 @@ allprojects {
 
 val javaVersion = libs.versions.java.get()
 val springCloudBom = libs.spring.cloud.dependencies.get().toString()
+val jacocoVersion = libs.versions.jacoco.get()
 
 subprojects {
     apply(plugin = "java")
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "jacoco")
 
     repositories {
         mavenCentral()
@@ -52,5 +54,19 @@ subprojects {
 
     tasks.withType<Test>().configureEach {
         useJUnitPlatform()
+        // After tests run, build the coverage report
+        finalizedBy(tasks.named("jacocoTestReport"))
+    }
+
+    extensions.configure<JacocoPluginExtension> {
+        toolVersion = jacocoVersion
+    }
+
+    tasks.named<JacocoReport>("jacocoTestReport") {
+        dependsOn(tasks.named("test"))
+        reports {
+            xml.required = true   // machine-readable, for SonarCloud
+            html.required = true  // human-readable, open in a browser
+        }
     }
 }
