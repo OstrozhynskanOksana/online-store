@@ -5,6 +5,7 @@ spring-dependency-management = "1.1.7"
 spring-cloud = "2026.0.0"
 springdoc = "3.2.1"
 jacoco = "0.8.16"
+checkstyle = "14.4.0"
 
 [libraries]
 spring-cloud-dependencies = { module = "org.springframework.cloud:spring-cloud-dependencies", version.ref = "spring-cloud" }
