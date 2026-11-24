@@ -4,11 +4,20 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 plugins {
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.sonarqube)
 }
 
 allprojects {
     group = "com.onlinestore"
     version = "0.0.1-SNAPSHOT"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "OstrozhynskanOksana_online-store")
+        property("sonar.organization", "ostrozhynskanoksana")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 val javaVersion = libs.versions.java.get()
