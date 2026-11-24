@@ -1,4 +1,5 @@
 # Online Store
+[![CI](https://github.com/OstrozhynskanOksana/online-store/actions/workflows/ci.yml/badge.svg)](https://github.com/OstrozhynskanOksana/online-store/actions/workflows/ci.yml)
 
 Microservice-based online store: Spring Boot 4.2, Gradle (multi-module, Kotlin DSL), Java 25.
 
